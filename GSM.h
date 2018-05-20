@@ -14,6 +14,6 @@ void GSM_Signal_quality();//信号质量
 void GSM_SIM_Check();//是否检测到SIM卡片
 void GSM_Network_Check();//是否连接到网络
 
-void GSM_SMS_Send(uchar *lat_str,uchar *lng_str);	//以下是发送英文短信短信
+void GSM_SMS_Send(uchar status,uchar *lat_str,uchar *lng_str);	//以下是发送英文短信短信
 uchar GSM_Ring_Check();//检查是否有电话打来
 #endif

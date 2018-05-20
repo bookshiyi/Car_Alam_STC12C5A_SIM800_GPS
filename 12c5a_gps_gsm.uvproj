@@ -185,15 +185,15 @@
         </Utilities>
         <Target51>
           <Target51Misc>
-            <MemoryModel>1</MemoryModel>
+            <MemoryModel>2</MemoryModel>
             <RTOS>0</RTOS>
             <RomSize>2</RomSize>
             <DataHold>0</DataHold>
             <XDataHold>0</XDataHold>
-            <UseOnchipRom>0</UseOnchipRom>
+            <UseOnchipRom>1</UseOnchipRom>
             <UseOnchipArithmetic>0</UseOnchipArithmetic>
             <UseMultipleDPTR>0</UseMultipleDPTR>
-            <UseOnchipXram>0</UseOnchipXram>
+            <UseOnchipXram>1</UseOnchipXram>
             <HadIRAM>1</HadIRAM>
             <HadXRAM>1</HadXRAM>
             <HadIROM>1</HadIROM>
@@ -364,9 +364,29 @@
           <GroupName>Source Group 1</GroupName>
           <Files>
             <File>
-              <FileName>12c5a_gps_gsm.c</FileName>
+              <FileName>main.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\12c5a_gps_gsm.c</FilePath>
+              <FilePath>.\main.c</FilePath>
+            </File>
+            <File>
+              <FileName>uart1.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\uart1.c</FilePath>
+            </File>
+            <File>
+              <FileName>uart2.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\uart2.c</FilePath>
+            </File>
+            <File>
+              <FileName>GPS.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\GPS.c</FilePath>
+            </File>
+            <File>
+              <FileName>GSM.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\GSM.c</FilePath>
             </File>
             <File>
               <FileName>devices.c</FileName>
@@ -377,26 +397,6 @@
               <FileName>delay.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\delay.c</FilePath>
-            </File>
-            <File>
-              <FileName>uart1.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\uart1.c</FilePath>
-            </File>
-            <File>
-              <FileName>GPS.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\GPS.c</FilePath>
-            </File>
-            <File>
-              <FileName>uart2.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\uart2.c</FilePath>
-            </File>
-            <File>
-              <FileName>GSM.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\GSM.c</FilePath>
             </File>
           </Files>
         </Group>

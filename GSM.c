@@ -102,11 +102,12 @@ void GSM_Network_Check()//是否连接到网络
 		UART_TC("——已注册到网络——\r\n");
 		beep(500,1);
 }
-void GSM_SMS_Send(uchar *lat_str,uchar *lng_str)	//以下是发送英文短信短信
+void GSM_SMS_Send(uchar status,uchar *lat_str,uchar *lng_str)	//以下是发送英文短信短信
 {                  
 	uchar num=0,i=0;     
 	uchar send_flag=1;
-	static uchar message_1[]={"Your car may be stolen!!!\r\n http://uri.amap.com/marker?position="};
+	static uchar message_1_A[]={"Your car may be stolen!!!\r\n http://uri.amap.com/marker?position="};
+	static uchar message_1_B[]={"Your car is here:\r\n http://uri.amap.com/marker?position="};
 	uchar message_2[]={"121.287689"};//默认数值
 	uchar message_3[]={"31.234527"};//默认数值
 	static uchar message_4[]={"&name=MyCar&src=mypage&coordinate=wgs84&callnative=1"};
@@ -129,10 +130,13 @@ void GSM_SMS_Send(uchar *lat_str,uchar *lng_str)	//以下是发送英文短信短信
 		UART2_TC("AT+CMGF=1\r\n");  //方式1
 		delay_ms(800);//延时
 	beep(10,1);//短鸣叫
-		UART2_TC("AT+CMGS=\"+8615133849421\"\r\n");  //此处修改短信接收方电话号//////////////////////////////////////////
+		UART2_TC("AT+CMGS=\"+8615313289652\"\r\n");  //此处修改短信接收方电话号//////////////////////////////////////////15133849421
 		delay_ms(800);//延时
 	beep(10,1);//短鸣叫
-	UART2_TC(&message_1);  //此处修改短信内容
+	if(status==1)//可能被盗
+		UART2_TC(&message_1_A);  //此处修改短信内容
+	else//用户主动查询
+		UART2_TC(&message_1_B);  //此处修改短信内容
 	delay_ms(100);//延时
 	UART2_TC(&message_2);  //此处修改短信内容
 	delay_ms(100);//延时

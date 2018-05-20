@@ -1,4 +1,4 @@
-C51 COMPILER V9.00   MAIN                                                                  05/20/2018 18:35:51 PAGE 1   
+C51 COMPILER V9.00   MAIN                                                                  05/20/2018 22:32:45 PAGE 1   
 
 
 C51 COMPILER V9.00, COMPILATION OF MODULE MAIN
@@ -62,7 +62,7 @@ line level    source
   52   1          variable_init();  //变量初始化
   53   1          Uart_Init();
   54   1          Uart2_Init();
-C51 COMPILER V9.00   MAIN                                                                  05/20/2018 18:35:51 PAGE 2   
+C51 COMPILER V9.00   MAIN                                                                  05/20/2018 22:32:45 PAGE 2   
 
   55   1          UART_TC("--系统初始化成功——\r\n");
   56   1          GPS_Search();//gps搜星等待
@@ -87,48 +87,47 @@ line level    source
   75   3                  UART_TC("——异常震动——\r\n");
   76   3                  beep(80,5);
   77   3                  shake_flag=0;
-  78   3      
-  79   3                
-  80   3                  GSM_SMS_Send(Longitude_String,Latitude_String);
-  81   3              }
-  82   2              
-  83   2              gnrmc_handler(&GPS_Data);
-  84   2              
-  85   2              temp = GPS_Data.latitude;   
-  86   2              //printf("lat = %f\r\n",temp);
-  87   2              sprintf(Latitude_String, "%f", (double)temp);
-  88   2              printf("lat_str = %s\r\n",Latitude_String);
-  89   2      
-  90   2              temp = GPS_Data.longitude;    
-  91   2              //printf("lng = %f\r\n",temp);
-  92   2              sprintf(Longitude_String, "%f", (double)temp);
-  93   2              printf("lng_str = %s\r\n",Longitude_String);
-  94   2              
-  95   2              if(GSM_Ring_Check())//如果有电话打来
-  96   2              {
-  97   3                UART_TC("——有电话打来——\r\n");
-  98   3                GSM_SMS_Send(Longitude_String,Latitude_String);
-  99   3              }
+  78   3                
+  79   3                  GSM_SMS_Send(1,Longitude_String,Latitude_String);
+  80   3              }
+  81   2              
+  82   2              gnrmc_handler(&GPS_Data);
+  83   2              
+  84   2              temp = GPS_Data.latitude;   
+  85   2              //printf("lat = %f\r\n",temp);
+  86   2              sprintf(Latitude_String, "%f", (double)temp);
+  87   2              printf("lat_str = %s\r\n",Latitude_String);
+  88   2      
+  89   2              temp = GPS_Data.longitude;    
+  90   2              //printf("lng = %f\r\n",temp);
+  91   2              sprintf(Longitude_String, "%f", (double)temp);
+  92   2              printf("lng_str = %s\r\n",Longitude_String);
+  93   2              
+  94   2              if(GSM_Ring_Check())//如果有电话打来
+  95   2              {
+  96   3                UART_TC("——有电话打来——\r\n");
+  97   3                GSM_SMS_Send(0,Longitude_String,Latitude_String);
+  98   3              }
+  99   2              
  100   2              
- 101   2              
- 102   2              delay_ms(500);
- 103   2              UART_TC("——运行正常——\r\n");
- 104   2              
- 105   2          }
- 106   1      
- 107   1      }
+ 101   2              delay_ms(500);
+ 102   2              UART_TC("——运行正常——\r\n");
+ 103   2              
+ 104   2          }
+ 105   1      
+ 106   1      }
+ 107          
  108          
- 109          
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    350    ----
+   CODE SIZE        =    354    ----
    CONSTANT SIZE    =    135    ----
    XDATA SIZE       =     22      24
    PDATA SIZE       =   ----    ----
-C51 COMPILER V9.00   MAIN                                                                  05/20/2018 18:35:51 PAGE 3   
-
    DATA SIZE        =   ----    ----
+C51 COMPILER V9.00   MAIN                                                                  05/20/2018 22:32:45 PAGE 3   
+
    IDATA SIZE       =   ----    ----
    BIT SIZE         =   ----    ----
 END OF MODULE INFORMATION.

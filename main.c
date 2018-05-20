@@ -75,9 +75,8 @@ void main()
 						UART_TC("——异常震动——\r\n");
             beep(80,5);
             shake_flag=0;
-
 					
-						GSM_SMS_Send(Longitude_String,Latitude_String);
+						GSM_SMS_Send(1,Longitude_String,Latitude_String);
         }
 				
 				gnrmc_handler(&GPS_Data);
@@ -95,7 +94,7 @@ void main()
 				if(GSM_Ring_Check())//如果有电话打来
 				{
 					UART_TC("——有电话打来——\r\n");
-					GSM_SMS_Send(Longitude_String,Latitude_String);
+					GSM_SMS_Send(0,Longitude_String,Latitude_String);
 				}
 				
 				
