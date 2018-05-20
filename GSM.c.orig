@@ -1,0 +1,80 @@
+#include "GSM.h"
+#include "uart2.h"
+#include "uart1.h"
+#include "string.h"
+#include "delay.h"
+#include "devices.h"
+
+uchar rec_data[50];
+uchar rec_num;
+
+uchar hand(uchar *ptr)//和gsm模块进行握手检测
+{
+	if(strstr(rec_data,ptr)!=NULL)
+		return 1;
+	else
+		return 0;
+}
+
+void clear_rec_data()//清除串口二接收到的数据
+{
+	uchar i;
+	for(i=0;i<strlen(rec_data);i++)
+	{
+		rec_data[i]='0';
+	
+	}
+	rec_num=0;
+}
+
+void SIM800_Sync_Baudrate()//同步波特率函数
+{
+	uchar i=0;
+	UART2_TC("AT\r\n"); 
+		while(!hand("OK")) 
+	{
+		clear_rec_data();
+		i++;
+		UART2_TC("AT\r\n");//
+		delay_ms(500);//延时
+		beep(10,1);//短鸣叫
+		UART_TC("GSM正在同步波特率\r\n");
+		if(i>=5)
+		{
+		UART_TC("GSM波特率同步失败\r\n");
+			break;
+		}
+		else
+		{
+		}
+	}
+		UART_TC("GSM波特率同步成功\r\n");
+				beep(500,2);//握手成功
+}
+void SIM800_Hand()//握手函数
+{
+	uchar i=0;
+	UART2_TC("ATI\r\n"); 
+		while(!hand("OK")) 
+	{
+		clear_rec_data();
+		i++;
+		UART2_TC("ATI\r\n");//
+		delay_ms(500);//延时
+		beep(10,1);//短鸣叫
+		UART_TC("GSM握手中\r\n");
+		if(i>=5)
+		{
+			UART_TC("GSM握手失败\r\n");
+			break;
+		}
+		else
+		{
+		}
+	}
+			UART_TC("GSM握手成功\r\n");
+			beep(500,3);//握手成功
+}
+
+
+

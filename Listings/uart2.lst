@@ -1,0 +1,84 @@
+C51 COMPILER V9.00   UART2                                                                 05/20/2018 18:32:54 PAGE 1   
+
+
+C51 COMPILER V9.00, COMPILATION OF MODULE UART2
+OBJECT MODULE PLACED IN .\Objects\uart2.obj
+COMPILER INVOKED BY: C:\Program Files (x86)\Keil_v5_C51\C51\BIN\C51.EXE uart2.c LARGE OPTIMIZE(7,SPEED) BROWSE DEBUG OBJ
+                    -ECTEXTEND PRINT(.\Listings\uart2.lst) TABS(2) OBJECT(.\Objects\uart2.obj)
+
+line level    source
+
+   1          
+   2          #include "uart2.h"
+   3          #include "GSM.h"
+   4          
+   5          
+   6          extern uchar rec_data[50]=0;
+   7          extern uchar rec_num=0;
+   8           //=========baud 9600=======================
+   9          void Uart2_Init()      //串口2初始化函数，波特率9600
+  10          {
+  11   1        S2CON=  0x50   ;              //方式2，允许接收
+  12   1      //  BRT  =  RELOAD_TWO ;
+  13   1        BRT = 0xfd;                  //设置波特率9600
+  14   1        AUXR =  AUXR |0X10   ;       //允许独立波特率发生器运行
+  15   1      //  BRTx12_enable();
+  16   1        AUXR1 =  AUXR1&0xef   ;  //S2_P4=0,将uart2切换到P1口
+  17   1        IE2  =  IE2|0X01;     //允许串口2中断
+  18   1      }
+  19          
+  20          
+  21          void UART2_T (unsigned char UART_data)
+  22          { //定义串口发送数据变量
+  23   1        ES=0;
+  24   1        S2BUF = UART_data;  //将接收的数据发送回去
+  25   1        while((S2CON&S2TI)!=0x02);   //检查发送中断标志位
+  26   1        S2CON &= ~S2TI;              //令发送中断标志位为0（软件清零）
+  27   1        ES=1;
+  28   1      }
+  29          
+  30          void UART2_TC (unsigned char *str){
+  31   1        while(*str != '\0')
+  32   1        {
+  33   2          UART2_T(*str++);
+  34   2          //*str++;
+  35   2        }
+  36   1        *str = 0;
+  37   1      }
+  38          
+  39          void Uart2_Receive(void) interrupt 8//串口2的接收终端服务程序
+  40          {
+  41   1        uchar ch;
+  42   1        ES = 0;
+  43   1      
+  44   1        if(S2CON & S2RI)//如果是接收中断
+  45   1        {
+  46   2          ch = S2BUF;   
+  47   2            rec_data[rec_num++]=ch;
+  48   2            if(rec_num>=50)
+  49   2            rec_num=0;
+  50   2        }  
+  51   1      
+  52   1          S2CON &=~S2RI;        //清0 S2RI           
+  53   1        ES = 1; 
+  54   1      }
+C51 COMPILER V9.00   UART2                                                                 05/20/2018 18:32:54 PAGE 2   
+
+  55          
+  56          
+  57          
+  58          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    170    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =     51       3
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

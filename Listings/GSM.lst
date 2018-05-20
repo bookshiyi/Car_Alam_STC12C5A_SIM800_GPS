@@ -1,0 +1,222 @@
+C51 COMPILER V9.00   GSM                                                                   05/20/2018 20:15:11 PAGE 1   
+
+
+C51 COMPILER V9.00, COMPILATION OF MODULE GSM
+OBJECT MODULE PLACED IN .\Objects\GSM.obj
+COMPILER INVOKED BY: C:\Program Files (x86)\Keil_v5_C51\C51\BIN\C51.EXE GSM.c LARGE OPTIMIZE(7,SPEED) BROWSE DEBUG OBJEC
+                    -TEXTEND PRINT(.\Listings\GSM.lst) TABS(2) OBJECT(.\Objects\GSM.obj)
+
+line level    source
+
+   1          #include "GSM.h"
+   2          #include "uart2.h"
+   3          #include "uart1.h"
+   4          #include "string.h"
+   5          #include "delay.h"
+   6          #include "devices.h"
+   7          
+   8          extern uchar rec_data[50];
+   9          extern uchar rec_num;
+  10          extern uchar rec_num;
+  11          
+  12          uchar hand(uchar *ptr)//和gsm模块进行握手检测
+  13          {
+  14   1        if(strstr(rec_data,ptr)!=NULL)
+  15   1          return 1;
+  16   1        else
+  17   1          return 0;
+  18   1      }
+  19          
+  20          void clear_rec_data()//清除串口二接收到的数据
+  21          {
+  22   1        uchar i;
+  23   1        for(i=0;i<49;i++)
+  24   1        {
+  25   2          rec_data[i]='0';
+  26   2        }
+  27   1        rec_num=0;
+  28   1      }
+  29          
+  30          void GSM_Sync_Baudrate()//同步波特率函数
+  31          {
+  32   1          clear_rec_data();
+  33   1        UART2_TC("AT\r\n"); 
+  34   1          while(!hand("OK")) 
+  35   1        {
+  36   2          clear_rec_data();
+  37   2          UART2_TC("AT\r\n");//
+  38   2          delay_ms(1000);//延时
+  39   2          UART_TC("GSM正在同步波特率...\r\n");
+  40   2          beep(20,1);//短鸣叫
+  41   2        }
+  42   1          UART_TC("——GSM波特率同步成功——\r\n");
+  43   1          beep(500,1);//握手成功
+  44   1      }
+  45           void GSM_Hand()//握手函数
+  46          {
+  47   1          clear_rec_data();
+  48   1        UART2_TC("ATI\r\n"); 
+  49   1          while(!hand("OK")) 
+  50   1        {
+  51   2          clear_rec_data();
+  52   2          UART2_TC("ATI\r\n");//
+  53   2          delay_ms(1000);//延时
+  54   2          UART_TC("GSM正在握手...\r\n");
+C51 COMPILER V9.00   GSM                                                                   05/20/2018 20:15:11 PAGE 2   
+
+  55   2          beep(20,1);//短鸣叫
+  56   2        }
+  57   1          UART_TC("——GSM握手成功——\r\n");
+  58   1          beep(500,1);//握手成功
+  59   1      }
+  60          void GSM_Signal_quality()//信号质量
+  61          {
+  62   1          clear_rec_data();
+  63   1        UART2_TC("AT+CSQ\r\n"); 
+  64   1          while(!hand("OK")) 
+  65   1        {
+  66   2          clear_rec_data();
+  67   2          UART2_TC("AT+CSQ\r\n");//
+  68   2          delay_ms(1000);//延时
+  69   2          UART_TC("信号质量正在查询...\r\n");
+  70   2          beep(20,1);//短鸣叫
+  71   2        }
+  72   1          UART_TC("——信号质量通过——\r\n");
+  73   1          beep(500,1);
+  74   1      }
+  75          void GSM_SIM_Check()//是否检测到SIM卡片
+  76          {
+  77   1          clear_rec_data();
+  78   1        UART2_TC("AT+CPIN?\r\n"); 
+  79   1          while(!hand("READY")) 
+  80   1        {
+  81   2          clear_rec_data();
+  82   2          UART2_TC("AT+CPIN?\r\n");//
+  83   2          delay_ms(1000);//延时
+  84   2          UART_TC("SIM卡正在检测...\r\n");
+  85   2          beep(20,1);//短鸣叫
+  86   2        }
+  87   1          UART_TC("——SIM卡已检测到——\r\n");
+  88   1          beep(500,1);
+  89   1      }
+  90          void GSM_Network_Check()//是否连接到网络
+  91          {
+  92   1          clear_rec_data();
+  93   1        UART2_TC("AT+COPS?\r\n"); 
+  94   1          while(!hand("CHINA")) 
+  95   1        {
+  96   2          clear_rec_data();
+  97   2          UART2_TC("AT+COPS?\r\n");//
+  98   2          delay_ms(1000);//延时
+  99   2          UART_TC("注册网络正在检测...\r\n");
+ 100   2          beep(20,1);//短鸣叫
+ 101   2        }
+ 102   1          UART_TC("——已注册到网络——\r\n");
+ 103   1          beep(500,1);
+ 104   1      }
+ 105          void GSM_SMS_Send(uchar *lat_str,uchar *lng_str)  //以下是发送英文短信短信
+ 106          {                  
+ 107   1        uchar num=0,i=0;     
+ 108   1        uchar send_flag=1;
+ 109   1        static uchar message_1[]={"Your car may be stolen!!!\r\n http://uri.amap.com/marker?position="};
+ 110   1        uchar message_2[]={"121.287689"};//默认数值
+ 111   1        uchar message_3[]={"31.234527"};//默认数值
+ 112   1        static uchar message_4[]={"&name=MyCar&src=mypage&coordinate=wgs84&callnative=1"};
+ 113   1        
+ 114   1      
+ 115   1        for(i=0;i<10;i++)
+ 116   1        {
+C51 COMPILER V9.00   GSM                                                                   05/20/2018 20:15:11 PAGE 3   
+
+ 117   2          message_2[i]= lat_str[i];
+ 118   2          message_3[i]= lng_str[i];
+ 119   2        }
+ 120   1        
+ 121   1        
+ 122   1          clear_rec_data();
+ 123   1          UART2_TC("AT+CSCS=\"GSM\"\r\n"); //
+ 124   1          delay_ms(800);//延时
+ 125   1        beep(10,1);//短鸣叫
+ 126   1          UART2_TC("AT+CSCA?\r\n"); //短信中心号码
+ 127   1          delay_ms(800);//延时
+ 128   1        beep(10,1);//短鸣叫
+ 129   1          UART2_TC("AT+CMGF=1\r\n");  //方式1
+ 130   1          delay_ms(800);//延时
+ 131   1        beep(10,1);//短鸣叫
+ 132   1          UART2_TC("AT+CMGS=\"+8615133849421\"\r\n");  //此处修改短信接收方电话号/////////////////////////////////
+             -/////////
+ 133   1          delay_ms(800);//延时
+ 134   1        beep(10,1);//短鸣叫
+ 135   1        UART2_TC(&message_1);  //此处修改短信内容
+ 136   1        delay_ms(100);//延时
+ 137   1        UART2_TC(&message_2);  //此处修改短信内容
+ 138   1        delay_ms(100);//延时
+ 139   1        UART2_T(',');  //此处修改短信内容
+ 140   1        delay_ms(100);//延时
+ 141   1        UART2_TC(&message_3);  //此处修改短信内容
+ 142   1        delay_ms(100);//延时
+ 143   1        UART2_TC(&message_4);  //此处修改短信内容
+ 144   1          delay_ms(800);//延时
+ 145   1        beep(10,1);//短鸣叫
+ 146   1          clear_rec_data();
+ 147   1          UART2_T(0X1A);
+ 148   1          delay_ms(800);//延时
+ 149   1        beep(10,1);//短鸣叫
+ 150   1        
+ 151   1        while(!hand("OK")) 
+ 152   1        {
+ 153   2          clear_rec_data();
+ 154   2          num++;
+ 155   2          delay_ms(800);//延时
+ 156   2          UART_TC("短信正在发送...\r\n");
+ 157   2          beep(10,1);//短鸣叫
+ 158   2          if (num>20)
+ 159   2          {
+ 160   3            send_flag=0;
+ 161   3            break;
+ 162   3          }
+ 163   2        }
+ 164   1        if(send_flag==0)
+ 165   1        {
+ 166   2            UART_TC("——短信发送失败——\r\n");
+ 167   2            beep(500,2);//发送失败鸣叫两声
+ 168   2        }
+ 169   1        else
+ 170   1        {
+ 171   2          UART_TC("——短信发送成功——\r\n");
+ 172   2          beep(500,1);
+ 173   2        }
+ 174   1      }
+ 175          uchar GSM_Ring_Check()//检查是否有电话打来
+ 176          {
+ 177   1        if(hand("RI"))///////RING
+C51 COMPILER V9.00   GSM                                                                   05/20/2018 20:15:11 PAGE 4   
+
+ 178   1        {
+ 179   2          delay_ms(3000);
+ 180   2          UART2_TC("ATH\r\n");//挂断打进来的电话
+ 181   2          clear_rec_data();
+ 182   2          return 1;
+ 183   2        }
+ 184   1        else
+ 185   1        {
+ 186   2          clear_rec_data();
+ 187   2          return 0;
+ 188   2        }
+ 189   1      }
+ 190          
+ 191          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    963    ----
+   CONSTANT SIZE    =    440    ----
+   XDATA SIZE       =    118      32
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

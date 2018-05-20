@@ -1,0 +1,105 @@
+C51 COMPILER V9.00   12C5A_GPS_GSM                                                         05/20/2018 12:57:54 PAGE 1   
+
+
+C51 COMPILER V9.00, COMPILATION OF MODULE 12C5A_GPS_GSM
+OBJECT MODULE PLACED IN .\Objects\12c5a_gps_gsm.obj
+COMPILER INVOKED BY: C:\Program Files (x86)\Keil_v5_C51\C51\BIN\C51.EXE 12c5a_gps_gsm.c COMPACT OPTIMIZE(7,SPEED) BROWSE
+                    - DEBUG OBJECTEXTEND PRINT(.\Listings\12c5a_gps_gsm.lst) TABS(2) OBJECT(.\Objects\12c5a_gps_gsm.obj)
+
+line level    source
+
+   1          
+   2          #include "common.h"
+   3          #include "GPS.h"
+   4          #include "GSM.h"
+   5          #include "delay.h"
+   6          #include "uart1.h"
+   7          #include "devices.h"
+   8          #include "uart2.h"
+   9          
+  10          /*beep - P2.5*/
+  11          /*继电器 - P2.4*/
+  12          /*震动模块 - P3.2*/
+  13          /*遥控模块 (全部断开) - P3.3*/
+  14          /*int0 - p3.2*/
+  15          /*int1 - p3.3*/
+  16          /*int - p3.4*/
+  17          /*int - p3.5*/
+  18          
+  19          /*串口1 - 3.0 3.1 */
+  20          /*串口2 - 1.2 1.3*/
+  21          /*ADC - 1.0~1.7  （1.5-1.7）*/
+  22          
+  23          
+  24          extern uchar arming_flag ;//布放 撤防
+  25          extern uchar shake_flag ;//震动
+  26          extern uchar buzz_flag ;//鸣叫
+  27          
+  28          
+  29          
+  30          /**************     初始化函数          *********/
+  31          static void variable_init() //初始化变量
+  32          {
+  33   1          arming_flag = 0;//布放 撤防
+  34   1          shake_flag = 0;//震动
+  35   1          buzz_flag = 0;//鸣叫
+  36   1          relay = 1;//默认接通引擎继电器
+  37   1      }
+  38          
+  39          
+  40          /**************     主函数        **********/
+  41          void main()
+  42          {
+  43   1          beep(100,1);
+  44   1          delay_ms(200);
+  45   1          arming_init();  //布放输入初始化
+  46   1          variable_init();  //变量初始化
+  47   1          Uart_Init();
+  48   1          Uart2_Init();
+  49   1          UART_TC("--系统初始化成功 \r\n");
+  50   1          GPS_Search();//gps搜星等待
+  51   1          GSM_Sync_Baudrate();//同步波特率函数
+  52   1          GSM_Hand();//握手函数
+  53   1        beep(100,1);//短鸣叫
+  54   1          GSM_Signal_quality();//信号质量
+C51 COMPILER V9.00   12C5A_GPS_GSM                                                         05/20/2018 12:57:54 PAGE 2   
+
+  55   1          GSM_SIM_Check();//是否检测到SIM卡片
+  56   1          GSM_Network_Check();//是否连接到网络
+  57   1          
+  58   1          while(1)
+  59   1          {
+  60   2      
+  61   2              if(buzz_flag)//布放两声，撤防一声
+  62   2              {
+  63   3                  UART_TC("--布放/撤防\r\n");
+  64   3                  beep(200,buzz_flag);
+  65   3                  buzz_flag=0;
+  66   3              }
+  67   2              if(shake_flag == 1)//检测到震动输入
+  68   2              {
+  69   3                  UART_TC("--异常震动\r\n");
+  70   3                  beep(80,5);
+  71   3                  shake_flag=0;
+  72   3              }
+  73   2              gnrmc_handler();
+  74   2              delay_ms(500);
+  75   2              UART_TC("--运行正常\r\n");
+  76   2          }
+  77   1      }
+  78          
+  79          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    156    ----
+   CONSTANT SIZE    =     60    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

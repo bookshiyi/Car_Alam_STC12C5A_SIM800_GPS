@@ -1,0 +1,126 @@
+#include "common.h"
+//#include "GPS.h"
+#include "delay.h"
+#include "devices.h"
+#include "uart1.h"
+
+/*beep - P2.5*/
+/*继电器 - P2.4*/
+/*震动模块 - P3.2*/
+/*遥控模块 (全部断开) - P3.3*/
+/*int0 - p3.2*/
+/*int1 - p3.3*/
+/*int - p3.4*/
+/*int - p3.5*/
+
+/*串口1 - 3.0 3.1 */
+/*串口2 - 1.2 1.3*/
+/*ADC - 1.0~1.7  （1.5-1.7）*/
+
+
+
+uchar arming_flag = 0;//布放 撤防
+uchar shake_flag = 0;//震动
+uchar buzz_flag = 0;//鸣叫
+
+
+
+
+
+
+/**************			初始化函数					*********/
+static void Uart_Init(void)
+{
+    //因为使用12Mhz晶振所以无法使用9600波特率
+    SCON=0X50;			//设置为工作方式1
+    TMOD=0X20;			//设置计数器工作方式2，TL1作为计数，TH1作为重装值
+    PCON=0X80;			//80波特率加倍  00不加倍
+    TH1=0xfa;				//计数器初始值设置，注意波特率是4800的（12c5a 9600 对应0xfa）
+    TL1=0x00;
+    ES=1;						//打开接收中断
+    EA=1;						//打开总中断
+    TR1=1;					//打开计数器
+}
+
+static void variable_init()	//初始化变量
+{
+    arming_flag = 0;//布放 撤防
+    shake_flag = 0;//震动
+    buzz_flag = 0;//鸣叫
+    relay = 1;//默认接通引擎继电器
+}
+
+/**************			主函数				**********/
+void main()
+{
+    beep(50,1);
+    arming_init();	//布放输入初始化
+    variable_init();	//变量初始化
+    Uart_Init();
+		UART_TC("系统初始化成功 \r\n");
+    while(1)
+    {
+				
+        if(buzz_flag)
+        {
+            beep(200,buzz_flag);
+            buzz_flag=0;
+        }
+        if(shake_flag == 1)
+        {
+            beep(80,5);
+            shake_flag=0;
+        }
+
+					beep(80,1);////////////////////////////////////////////
+				}
+
+		if (rev_stop)   //如果接收完一行         
+		{
+				if (GPS_RMC_Parse(rev_buf, &GPS)) ////////////////解析GPRMC 
+				{
+					//RMC_YES;      
+					UART_TC("定位成功 \r\n");  
+					error_num = 0;
+					gps_flag = 0;
+					rev_stop  = 0;
+				}
+				else
+				{
+					gps_flag = 0;
+					rev_stop  = 0;
+					//REV_NO;
+					UART_TC("正在搜索卫星 \r\n");
+				}
+			}
+				delay_ms(500);
+    }
+}
+
+/*******************            中断          *********************/
+void exint1() interrupt 2	/*布放/撤防*/
+{
+    arming_flag = !arming_flag;
+    if(arming_flag == 1)//布放
+    {
+        relay=0;				//断开引擎继电器
+        buzz_flag = 2;	//鸣叫两次
+        shake_input(1);	//打开震动输入
+    }
+    else if(arming_flag == 0)//撤防
+    {
+        relay=1;			//接通引擎继电器
+        buzz_flag = 1;//鸣叫一次
+        shake_input(0);	//关闭震动输入
+    }
+}
+void exint0() interrupt 0	/*振动传感器*/
+{
+    static uchar trig_num=0;	//局部静态变量(震动触发次数)
+    trig_num++;
+    if(trig_num>5)					//防止误触发震动模块
+    {
+        trig_num=0;
+        shake_flag = 1;
+    }
+}

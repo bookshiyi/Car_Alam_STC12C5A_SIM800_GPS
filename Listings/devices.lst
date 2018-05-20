@@ -1,0 +1,98 @@
+C51 COMPILER V9.00   DEVICES                                                               05/20/2018 17:23:38 PAGE 1   
+
+
+C51 COMPILER V9.00, COMPILATION OF MODULE DEVICES
+OBJECT MODULE PLACED IN .\Objects\devices.obj
+COMPILER INVOKED BY: C:\Program Files (x86)\Keil_v5_C51\C51\BIN\C51.EXE devices.c LARGE OPTIMIZE(7,SPEED) BROWSE DEBUG O
+                    -BJECTEXTEND PRINT(.\Listings\devices.lst) TABS(2) OBJECT(.\Objects\devices.obj)
+
+line level    source
+
+   1          #include "devices.h"
+   2          #include "delay.h"
+   3          
+   4          
+   5          uchar arming_flag =0;//布放 撤防
+   6          uchar shake_flag  =0;//震动
+   7          uchar buzz_flag   =0;//鸣叫
+   8          
+   9          
+  10          void beep(uint time,uchar num)
+  11          {
+  12   1        uint i,j;
+  13   1        for(i=0;i<num;i++)
+  14   1        {
+  15   2          for(j=0;j<time;j++)
+  16   2          {
+  17   3            buzz=!buzz;
+  18   3            delay_ms(2);
+  19   3          }
+  20   2          delay_ms(time);
+  21   2        }
+  22   1      }
+  23          void shake_input(uchar i)   //震动传感器输入开关
+  24          {
+  25   1        if(i)//打开震动传感器输入
+  26   1        {
+  27   2          IT0=1;
+  28   2          EX0=1;
+  29   2        }
+  30   1        else  //关闭震动传感器输入
+  31   1        {
+  32   2          IT0=0;
+  33   2          EX0=0;
+  34   2          
+  35   2        }
+  36   1      }
+  37          void arming_init()
+  38          {
+  39   1        //WAKE_CLKO = 0X20;   //开启P3.5下降沿唤醒CPU
+  40   1        IT1=1;                  //下降沿触发
+  41   1        EX1=1;
+  42   1        EA=1;
+  43   1      }
+  44          
+  45          
+  46          /*******************            中断          *********************/
+  47          void exint1() interrupt 2 /*布放/撤防*/
+  48          {
+  49   1          arming_flag = !arming_flag;
+  50   1          if(arming_flag == 1)//布放
+  51   1          {
+  52   2              relay=0;        //断开引擎继电器
+  53   2              buzz_flag = 2;  //鸣叫两次
+  54   2              shake_input(1); //打开震动输入
+C51 COMPILER V9.00   DEVICES                                                               05/20/2018 17:23:38 PAGE 2   
+
+  55   2          }
+  56   1          else if(arming_flag == 0)//撤防
+  57   1          {
+  58   2              relay=1;      //接通引擎继电器
+  59   2              buzz_flag = 1;//鸣叫一次
+  60   2              shake_input(0); //关闭震动输入
+  61   2          }
+  62   1      }
+  63          void exint0() interrupt 0 /*振动传感器*/
+  64          {
+  65   1          static uchar trig_num=0;  //局部静态变量(震动触发次数)
+  66   1          trig_num++;
+  67   1          if(trig_num>5)          //防止误触发震动模块
+  68   1          {
+  69   2              trig_num=0;
+  70   2              shake_flag = 1;
+  71   2          }
+  72   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    249    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =      4       7
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

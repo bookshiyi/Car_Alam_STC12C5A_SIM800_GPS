@@ -1,0 +1,11 @@
+".\Objects\main.obj",
+".\Objects\uart1.obj",
+".\Objects\uart2.obj",
+".\Objects\GPS.obj",
+".\Objects\GSM.obj",
+".\Objects\devices.obj",
+".\Objects\delay.obj" 
+TO ".\Objects\12c5a_gps_gsm" 
+PRINT(".\Listings\12c5a_gps_gsm.m51") RAMSIZE(256) 
+CODE( 0X0000-0XEFFF )
+XDATA( 0X0000-0X03FF )

@@ -1,0 +1,105 @@
+C51 COMPILER V9.00   UART1                                                                 05/20/2018 17:23:06 PAGE 1   
+
+
+C51 COMPILER V9.00, COMPILATION OF MODULE UART1
+OBJECT MODULE PLACED IN .\Objects\uart1.obj
+COMPILER INVOKED BY: C:\Program Files (x86)\Keil_v5_C51\C51\BIN\C51.EXE uart1.c LARGE OPTIMIZE(7,SPEED) BROWSE DEBUG OBJ
+                    -ECTEXTEND PRINT(.\Listings\uart1.lst) TABS(2) OBJECT(.\Objects\uart1.obj)
+
+line level    source
+
+   1          
+   2          #include "common.h"
+   3          #include "uart1.h"
+   4          #include "devices.h"
+   5          
+   6            
+   7          uchar num = 0; 
+   8          uchar rev_start = 0;     //接收开始标志      
+   9          uchar rev_stop  = 0;     //接收停止标志     
+  10          uchar gps_flag = 0;      //GPS处理标志     
+  11          char  rev_buf[80];        //接收缓存 
+  12          
+  13          
+  14          void Uart_Init(void)
+  15          {
+  16   1          //因为使用12Mhz晶振所以无法使用9600波特率
+  17   1          SCON=0X50;      //设置为工作方式1
+  18   1          TMOD=0X20;      //设置计数器工作方式2，TL1作为计数，TH1作为重装值
+  19   1          PCON=0X80;      //80波特率加倍  00不加倍
+  20   1          TH1=0xfa;       //计数器初始值设置，注意波特率是4800的（12c5a 9600 对应0xfa）
+  21   1          TL1=0x00;
+  22   1          ES=1;           //打开接收中断
+  23   1          EA=1;           //打开总中断
+  24   1          TR1=1;          //打开计数器
+  25   1      }
+  26          
+  27          void UART_T (unsigned char UART_data){ //定义串口发送数据变量
+  28   1        ES=0;
+  29   1        SBUF = UART_data; //将接收的数据发送回去
+  30   1        while(TI == 0);   //检查发送中断标志位
+  31   1        TI = 0;     //令发送中断标志位为0（软件清零）
+  32   1        ES=1;
+  33   1      }
+  34          
+  35          void UART_TC (unsigned char *str){
+  36   1        while(*str != '\0'){
+  37   2          UART_T(*str++);
+  38   2          //*str++;
+  39   2        }
+  40   1        *str = 0;
+  41   1      }
+  42          
+  43              
+  44          void Uart_Receive(void) interrupt 4
+  45          {
+  46   1        uchar ch;
+  47   1        ES =0;  
+  48   1        if (RI)
+  49   1        {
+  50   2          ch = SBUF;  
+  51   2          //send_char(ch);
+  52   2          if ((ch == '$') && (gps_flag == 0))  //如果收到字符'$'，便开始接收           
+  53   2          {
+  54   3            rev_start = 1;
+C51 COMPILER V9.00   UART1                                                                 05/20/2018 17:23:06 PAGE 2   
+
+  55   3            rev_stop  = 0;
+  56   3          }
+  57   2        
+  58   2          if (rev_start == 1)  //标志位为1，开始接收            
+  59   2          {
+  60   3            rev_buf[num++] = ch;  //字符存到数组中           
+  61   3            if (ch == '\n')     //如果接收到换行           
+  62   3            {
+  63   4              rev_buf[num] = '\0';
+  64   4              rev_start = 0;
+  65   4              rev_stop  = 1;
+  66   4              gps_flag = 1;
+  67   4              num = 0;
+  68   4            }
+  69   3          }
+  70   2        }
+  71   1        RI = 0;  //RI清0，重新接收            
+  72   1        ES = 1; 
+  73   1      }
+  74          //重写putchar函数
+  75          char putchar(char c)
+  76          {
+  77   1          UART_T(c);
+  78   1          return c;
+  79   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    227    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =     84       3
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
