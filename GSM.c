@@ -9,7 +9,7 @@ extern uchar rec_data[50];
 extern uchar rec_num;
 extern uchar rec_num;
 
-uchar hand(uchar *ptr)//ºÍgsmÄ£¿é½øĞĞÎÕÊÖ¼ì²â
+uchar hand(uchar *ptr)//å’Œgsmæ¨¡å—è¿›è¡Œæ¡æ‰‹æ£€æµ‹
 {
 	if(strstr(rec_data,ptr)!=NULL)
 		return 1;
@@ -17,7 +17,7 @@ uchar hand(uchar *ptr)//ºÍgsmÄ£¿é½øĞĞÎÕÊÖ¼ì²â
 		return 0;
 }
 
-void clear_rec_data()//Çå³ı´®¿Ú¶ş½ÓÊÕµ½µÄÊı¾İ
+void clear_rec_data()//æ¸…é™¤ä¸²å£äºŒæ¥æ”¶åˆ°çš„æ•°æ®
 {
 	uchar i;
 	for(i=0;i<49;i++)
@@ -27,7 +27,7 @@ void clear_rec_data()//Çå³ı´®¿Ú¶ş½ÓÊÕµ½µÄÊı¾İ
 	rec_num=0;
 }
 
-void GSM_Sync_Baudrate()//Í¬²½²¨ÌØÂÊº¯Êı
+void GSM_Sync_Baudrate()//åŒæ­¥æ³¢ç‰¹ç‡å‡½æ•°
 {
 		clear_rec_data();
 	UART2_TC("AT\r\n"); 
@@ -35,14 +35,14 @@ void GSM_Sync_Baudrate()//Í¬²½²¨ÌØÂÊº¯Êı
 	{
 		clear_rec_data();
 		UART2_TC("AT\r\n");//
-		delay_ms(1000);//ÑÓÊ±
-		UART_TC("GSMÕıÔÚÍ¬²½²¨ÌØÂÊ...\r\n");
-		beep(20,1);//¶ÌÃù½Ğ
+		delay_ms(1000);//å»¶æ—¶
+		UART_TC("GSMæ­£åœ¨åŒæ­¥æ³¢ç‰¹ç‡...\r\n");
+		beep(20,1);//çŸ­é¸£å«
 	}
-		UART_TC("¡ª¡ªGSM²¨ÌØÂÊÍ¬²½³É¹¦¡ª¡ª\r\n");
-		beep(500,1);//ÎÕÊÖ³É¹¦
+		UART_TC("â€”â€”GSMæ³¢ç‰¹ç‡åŒæ­¥æˆåŠŸâ€”â€”\r\n");
+		beep(500,1);//æ¡æ‰‹æˆåŠŸ
 }
- void GSM_Hand()//ÎÕÊÖº¯Êı
+ void GSM_Hand()//æ¡æ‰‹å‡½æ•°
 {
 		clear_rec_data();
 	UART2_TC("ATI\r\n"); 
@@ -50,14 +50,14 @@ void GSM_Sync_Baudrate()//Í¬²½²¨ÌØÂÊº¯Êı
 	{
 		clear_rec_data();
 		UART2_TC("ATI\r\n");//
-		delay_ms(1000);//ÑÓÊ±
-		UART_TC("GSMÕıÔÚÎÕÊÖ...\r\n");
-		beep(20,1);//¶ÌÃù½Ğ
+		delay_ms(1000);//å»¶æ—¶
+		UART_TC("GSMæ­£åœ¨æ¡æ‰‹...\r\n");
+		beep(20,1);//çŸ­é¸£å«
 	}
-		UART_TC("¡ª¡ªGSMÎÕÊÖ³É¹¦¡ª¡ª\r\n");
-		beep(500,1);//ÎÕÊÖ³É¹¦
+		UART_TC("â€”â€”GSMæ¡æ‰‹æˆåŠŸâ€”â€”\r\n");
+		beep(500,1);//æ¡æ‰‹æˆåŠŸ
 }
-void GSM_Signal_quality()//ĞÅºÅÖÊÁ¿
+void GSM_Signal_quality()//ä¿¡å·è´¨é‡
 {
 		clear_rec_data();
 	UART2_TC("AT+CSQ\r\n"); 
@@ -65,14 +65,14 @@ void GSM_Signal_quality()//ĞÅºÅÖÊÁ¿
 	{
 		clear_rec_data();
 		UART2_TC("AT+CSQ\r\n");//
-		delay_ms(1000);//ÑÓÊ±
-		UART_TC("ĞÅºÅÖÊÁ¿ÕıÔÚ²éÑ¯...\r\n");
-		beep(20,1);//¶ÌÃù½Ğ
+		delay_ms(1000);//å»¶æ—¶
+		UART_TC("ä¿¡å·è´¨é‡æ­£åœ¨æŸ¥è¯¢...\r\n");
+		beep(20,1);//çŸ­é¸£å«
 	}
-		UART_TC("¡ª¡ªĞÅºÅÖÊÁ¿Í¨¹ı¡ª¡ª\r\n");
+		UART_TC("â€”â€”ä¿¡å·è´¨é‡é€šè¿‡â€”â€”\r\n");
 		beep(500,1);
 }
-void GSM_SIM_Check()//ÊÇ·ñ¼ì²âµ½SIM¿¨Æ¬
+void GSM_SIM_Check()//æ˜¯å¦æ£€æµ‹åˆ°SIMå¡ç‰‡
 {
 		clear_rec_data();
 	UART2_TC("AT+CPIN?\r\n"); 
@@ -80,14 +80,14 @@ void GSM_SIM_Check()//ÊÇ·ñ¼ì²âµ½SIM¿¨Æ¬
 	{
 		clear_rec_data();
 		UART2_TC("AT+CPIN?\r\n");//
-		delay_ms(1000);//ÑÓÊ±
-		UART_TC("SIM¿¨ÕıÔÚ¼ì²â...\r\n");
-		beep(20,1);//¶ÌÃù½Ğ
+		delay_ms(1000);//å»¶æ—¶
+		UART_TC("SIMå¡æ­£åœ¨æ£€æµ‹...\r\n");
+		beep(20,1);//çŸ­é¸£å«
 	}
-		UART_TC("¡ª¡ªSIM¿¨ÒÑ¼ì²âµ½¡ª¡ª\r\n");
+		UART_TC("â€”â€”SIMå¡å·²æ£€æµ‹åˆ°â€”â€”\r\n");
 		beep(500,1);
 }
-void GSM_Network_Check()//ÊÇ·ñÁ¬½Óµ½ÍøÂç
+void GSM_Network_Check()//æ˜¯å¦è¿æ¥åˆ°ç½‘ç»œ
 {
 		clear_rec_data();
 	UART2_TC("AT+COPS?\r\n"); 
@@ -95,21 +95,21 @@ void GSM_Network_Check()//ÊÇ·ñÁ¬½Óµ½ÍøÂç
 	{
 		clear_rec_data();
 		UART2_TC("AT+COPS?\r\n");//
-		delay_ms(1000);//ÑÓÊ±
-		UART_TC("×¢²áÍøÂçÕıÔÚ¼ì²â...\r\n");
-		beep(20,1);//¶ÌÃù½Ğ
+		delay_ms(1000);//å»¶æ—¶
+		UART_TC("æ³¨å†Œç½‘ç»œæ­£åœ¨æ£€æµ‹...\r\n");
+		beep(20,1);//çŸ­é¸£å«
 	}
-		UART_TC("¡ª¡ªÒÑ×¢²áµ½ÍøÂç¡ª¡ª\r\n");
+		UART_TC("â€”â€”å·²æ³¨å†Œåˆ°ç½‘ç»œâ€”â€”\r\n");
 		beep(500,1);
 }
-void GSM_SMS_Send(uchar status,uchar *lat_str,uchar *lng_str)	//ÒÔÏÂÊÇ·¢ËÍÓ¢ÎÄ¶ÌĞÅ¶ÌĞÅ
+void GSM_SMS_Send(uchar status,uchar *lat_str,uchar *lng_str)	//ä»¥ä¸‹æ˜¯å‘é€è‹±æ–‡çŸ­ä¿¡çŸ­ä¿¡
 {                  
 	uchar num=0,i=0;     
 	uchar send_flag=1;
 	static uchar message_1_A[]={"Your car may be stolen!!!\r\n http://uri.amap.com/marker?position="};
 	static uchar message_1_B[]={"Your car is here:\r\n http://uri.amap.com/marker?position="};
-	uchar message_2[]={"121.287689"};//Ä¬ÈÏÊıÖµ
-	uchar message_3[]={"31.234527"};//Ä¬ÈÏÊıÖµ
+	uchar message_2[]={"121.287689"};//é»˜è®¤æ•°å€¼
+	uchar message_3[]={"31.234527"};//é»˜è®¤æ•°å€¼
 	static uchar message_4[]={"&name=MyCar&src=mypage&coordinate=wgs84&callnative=1"};
 	
 
@@ -122,43 +122,43 @@ void GSM_SMS_Send(uchar status,uchar *lat_str,uchar *lng_str)	//ÒÔÏÂÊÇ·¢ËÍÓ¢ÎÄ¶Ì
 	
 		clear_rec_data();
 		UART2_TC("AT+CSCS=\"GSM\"\r\n"); //
-		delay_ms(800);//ÑÓÊ±
-	beep(10,1);//¶ÌÃù½Ğ
-		UART2_TC("AT+CSCA?\r\n"); //¶ÌĞÅÖĞĞÄºÅÂë
-		delay_ms(800);//ÑÓÊ±
-	beep(10,1);//¶ÌÃù½Ğ
-		UART2_TC("AT+CMGF=1\r\n");  //·½Ê½1
-		delay_ms(800);//ÑÓÊ±
-	beep(10,1);//¶ÌÃù½Ğ
-		UART2_TC("AT+CMGS=\"+8615313289652\"\r\n");  //´Ë´¦ĞŞ¸Ä¶ÌĞÅ½ÓÊÕ·½µç»°ºÅ//////////////////////////////////////////15133849421
-		delay_ms(800);//ÑÓÊ±
-	beep(10,1);//¶ÌÃù½Ğ
-	if(status==1)//¿ÉÄÜ±»µÁ
-		UART2_TC(&message_1_A);  //´Ë´¦ĞŞ¸Ä¶ÌĞÅÄÚÈİ
-	else//ÓÃ»§Ö÷¶¯²éÑ¯
-		UART2_TC(&message_1_B);  //´Ë´¦ĞŞ¸Ä¶ÌĞÅÄÚÈİ
-	delay_ms(100);//ÑÓÊ±
-	UART2_TC(&message_2);  //´Ë´¦ĞŞ¸Ä¶ÌĞÅÄÚÈİ
-	delay_ms(100);//ÑÓÊ±
-	UART2_T(',');  //´Ë´¦ĞŞ¸Ä¶ÌĞÅÄÚÈİ
-	delay_ms(100);//ÑÓÊ±
-	UART2_TC(&message_3);  //´Ë´¦ĞŞ¸Ä¶ÌĞÅÄÚÈİ
-	delay_ms(100);//ÑÓÊ±
-	UART2_TC(&message_4);  //´Ë´¦ĞŞ¸Ä¶ÌĞÅÄÚÈİ
-		delay_ms(800);//ÑÓÊ±
-	beep(10,1);//¶ÌÃù½Ğ
+		delay_ms(800);//å»¶æ—¶
+	beep(10,1);//çŸ­é¸£å«
+		UART2_TC("AT+CSCA?\r\n"); //çŸ­ä¿¡ä¸­å¿ƒå·ç 
+		delay_ms(800);//å»¶æ—¶
+	beep(10,1);//çŸ­é¸£å«
+		UART2_TC("AT+CMGF=1\r\n");  //æ–¹å¼1
+		delay_ms(800);//å»¶æ—¶
+	beep(10,1);//çŸ­é¸£å«
+		UART2_TC("AT+CMGS=\"+8613812345678\"\r\n");  //æ­¤å¤„ä¿®æ”¹çŸ­ä¿¡æ¥æ”¶æ–¹ç”µè¯å·//////////////////////////////////////////15133849421
+		delay_ms(800);//å»¶æ—¶
+	beep(10,1);//çŸ­é¸£å«
+	if(status==1)//å¯èƒ½è¢«ç›—
+		UART2_TC(&message_1_A);  //æ­¤å¤„ä¿®æ”¹çŸ­ä¿¡å†…å®¹
+	else//ç”¨æˆ·ä¸»åŠ¨æŸ¥è¯¢
+		UART2_TC(&message_1_B);  //æ­¤å¤„ä¿®æ”¹çŸ­ä¿¡å†…å®¹
+	delay_ms(100);//å»¶æ—¶
+	UART2_TC(&message_2);  //æ­¤å¤„ä¿®æ”¹çŸ­ä¿¡å†…å®¹
+	delay_ms(100);//å»¶æ—¶
+	UART2_T(',');  //æ­¤å¤„ä¿®æ”¹çŸ­ä¿¡å†…å®¹
+	delay_ms(100);//å»¶æ—¶
+	UART2_TC(&message_3);  //æ­¤å¤„ä¿®æ”¹çŸ­ä¿¡å†…å®¹
+	delay_ms(100);//å»¶æ—¶
+	UART2_TC(&message_4);  //æ­¤å¤„ä¿®æ”¹çŸ­ä¿¡å†…å®¹
+		delay_ms(800);//å»¶æ—¶
+	beep(10,1);//çŸ­é¸£å«
 		clear_rec_data();
 		UART2_T(0X1A);
-		delay_ms(800);//ÑÓÊ±
-	beep(10,1);//¶ÌÃù½Ğ
+		delay_ms(800);//å»¶æ—¶
+	beep(10,1);//çŸ­é¸£å«
 	
 	while(!hand("OK")) 
 	{
 		clear_rec_data();
 		num++;
-		delay_ms(800);//ÑÓÊ±
-		UART_TC("¶ÌĞÅÕıÔÚ·¢ËÍ...\r\n");
-		beep(10,1);//¶ÌÃù½Ğ
+		delay_ms(800);//å»¶æ—¶
+		UART_TC("çŸ­ä¿¡æ­£åœ¨å‘é€...\r\n");
+		beep(10,1);//çŸ­é¸£å«
 		if (num>20)
 		{
 			send_flag=0;
@@ -167,21 +167,21 @@ void GSM_SMS_Send(uchar status,uchar *lat_str,uchar *lng_str)	//ÒÔÏÂÊÇ·¢ËÍÓ¢ÎÄ¶Ì
 	}
 	if(send_flag==0)
 	{
-			UART_TC("¡ª¡ª¶ÌĞÅ·¢ËÍÊ§°Ü¡ª¡ª\r\n");
-			beep(500,2);//·¢ËÍÊ§°ÜÃù½ĞÁ½Éù
+			UART_TC("â€”â€”çŸ­ä¿¡å‘é€å¤±è´¥â€”â€”\r\n");
+			beep(500,2);//å‘é€å¤±è´¥é¸£å«ä¸¤å£°
 	}
 	else
 	{
-		UART_TC("¡ª¡ª¶ÌĞÅ·¢ËÍ³É¹¦¡ª¡ª\r\n");
+		UART_TC("â€”â€”çŸ­ä¿¡å‘é€æˆåŠŸâ€”â€”\r\n");
 		beep(500,1);
 	}
 }
-uchar GSM_Ring_Check()//¼ì²éÊÇ·ñÓĞµç»°´òÀ´
+uchar GSM_Ring_Check()//æ£€æŸ¥æ˜¯å¦æœ‰ç”µè¯æ‰“æ¥
 {
 	if(hand("RI"))///////RING
 	{
 		delay_ms(3000);
-		UART2_TC("ATH\r\n");//¹Ò¶Ï´ò½øÀ´µÄµç»°
+		UART2_TC("ATH\r\n");//æŒ‚æ–­æ‰“è¿›æ¥çš„ç”µè¯
 		clear_rec_data();
 		return 1;
 	}
